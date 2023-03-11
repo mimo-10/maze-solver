@@ -44,17 +44,20 @@ void flood(int pos, Maze* maze)
 {
     /* Directions: 1 - up, 2 - right, 3 - down, 4 -left */
 
-    const int down = maze->width; // Offset to cell below any given cell
+    const int down  = maze->width;  // Offset to cell below any given cell
+    const int up    = -maze->width; 
+    const int right = 1;
+    const int left  = -1;
 
     // Ignore edges, already flooded cells and out of bounds
     if ( (pos < 0) || (pos > strlen(maze->values)) || (maze->values[pos] == '#') || (maze->values[pos] == '0') ) return;
     
     maze->values[pos] = 'F';
 
-    flood(pos - down, maze);
-    flood(pos + 1,    maze);
-    flood(pos + down, maze);
-    flood(pos - 1,    maze);
+    flood(pos + up,    maze);
+    flood(pos + right, maze);
+    flood(pos + down,  maze);
+    flood(pos + left,  maze);
 }
 int main()
 {
