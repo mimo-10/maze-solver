@@ -9,6 +9,7 @@ typedef struct {
     char values[MAX_HEIGHT * MAX_WIDTH];
     int height;
     int width;
+    int start;
 } Maze;
 
 void getMaze(const char* path, Maze* maze)
@@ -23,16 +24,15 @@ void getMaze(const char* path, Maze* maze)
 
     while (ch != EOF) {
         ch = fgetc(fp);
-
+        if ( ch == '^')
+            maze->start = counter;
         // Newline => new row
         if ( ch == '\n'){
             maze->width = counter;
             row++;
         }
 
-        values[counter] = ch;
-        counter++;
-
+        values[counter++] = ch;
     }
 
     values[counter] = '\0';
@@ -40,14 +40,22 @@ void getMaze(const char* path, Maze* maze)
     maze->height = row;
 }
 
-typedef struct TreeNode TreeNode;
-
-struct TreeNode
+void flood(int pos, Maze* maze)
 {
-  int value;
-  TreeNode* next;
-  TreeNode* prev;
-};
+    /* Directions: 1 - up, 2 - right, 3 - down, 4 -left */
+
+    const int down = maze->width; // Offset to cell below any given cell
+
+    // Ignore edges, already flooded cells and out of bounds
+    if ( (pos < 0) || (pos > strlen(maze->values)) || (maze->values[pos] == '#') || (maze->values[pos] == '0') ) return;
+    
+    maze->values[pos] = 'F';
+
+    flood(pos - down, maze);
+    flood(pos + 1,    maze);
+    flood(pos + down, maze);
+    flood(pos - 1,    maze);
+}
 int main()
 {
     // Read maze files
@@ -55,9 +63,9 @@ int main()
     getMaze("./maze.txt", maze);
 
     printf("%s\n", maze->values);
+    flood(maze->start, maze);
+    printf("%s\n", maze->values);
 
-
-    // Convert mazes to graph
-    // Solve with A*
+    // Convert maze to graph
     return(0);
 }
