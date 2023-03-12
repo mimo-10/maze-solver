@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #define MAX_WIDTH  30
 #define MAX_HEIGHT 30
@@ -12,6 +13,11 @@ typedef struct {
     int start;
 } Maze;
 
+void printMaze(Maze* maze)
+{
+    printf("%s\n", maze->values);
+}
+
 void getMaze(const char* path, Maze* maze)
 {
     FILE *fp;
@@ -20,15 +26,20 @@ void getMaze(const char* path, Maze* maze)
     int counter = 0;
     int row = 0;
 
+    maze->width = 0;
+
     fp = fopen(path, "r");
 
     while (ch != EOF) {
         ch = fgetc(fp);
+
         if ( ch == '^')
             maze->start = counter;
+
         // Newline => new row
         if ( ch == '\n'){
-            maze->width = counter;
+            // Width = counter up until first newline, i.e. length of a row
+            if ( maze->width == 0) maze->width = counter;
             row++;
         }
 
@@ -44,15 +55,24 @@ void flood(int pos, Maze* maze)
 {
     /* Directions: 1 - up, 2 - right, 3 - down, 4 -left */
 
-    const int down  = maze->width;  // Offset to cell below any given cell
+    // Distance to cell above  and below any given cell is the width
+    const int down  = maze->width;  
     const int up    = -maze->width; 
+
     const int right = 1;
     const int left  = -1;
 
     // Ignore edges, already flooded cells and out of bounds
-    if ( (pos < 0) || (pos > strlen(maze->values)) || (maze->values[pos] == '#') || (maze->values[pos] == '0') ) return;
+    if ( (pos < 0) || (pos > strlen(maze->values)) || (maze->values[pos] == '#') || (maze->values[pos] == 'F') || (maze->values[pos] == '\n')) return;
     
-    maze->values[pos] = 'F';
+    printf("POS: %d CHAR: [%c]\n", pos, maze->values[pos]);
+    
+    printMaze(maze);
+    
+    // Fill only empty spaces
+    if ( maze->values[pos] == ' ' ) maze->values[pos] = 'F';
+
+    usleep(50*1000);
 
     flood(pos + up,    maze);
     flood(pos + right, maze);
@@ -65,10 +85,9 @@ int main()
     Maze* maze = (Maze*) malloc(sizeof(Maze));
     getMaze("./maze.txt", maze);
 
-    printf("%s\n", maze->values);
+    printMaze(maze);
     flood(maze->start, maze);
-    printf("%s\n", maze->values);
+    printMaze(maze);
 
-    // Convert maze to graph
     return(0);
 }
