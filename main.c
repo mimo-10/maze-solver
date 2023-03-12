@@ -3,8 +3,47 @@
 #include <string.h>
 #include <unistd.h>
 
+#define MIN(a,b) (((a)<(b))?(a):(b))
+#define MAX(a,b) (((a)>(b))?(a):(b))
+
 #define MAX_WIDTH  30
 #define MAX_HEIGHT 30
+#define MAX_PATH   70
+#define MAX_Q_SIZE 2000
+
+typedef struct {
+    int front;
+    int back;
+    int items[MAX_Q_SIZE];
+} Queue;
+
+void enQueue(Queue* q, int value)
+{
+    if (q->back == MAX_Q_SIZE - 1) return;
+    
+    if (q->front == -1) q->front = 0;
+    
+    q->back++;
+    q->items[q->back] = value;
+    
+}
+void deQueue(Queue* q)
+{
+    if (q->front == -1) return;
+
+    q->front++;
+
+    if (q->front > q->back)
+    {
+        q->front = -1;
+        q->back = -1;
+    }
+}
+void initQueue(Queue* q)
+{
+    q->front = -1;
+    q->back = -1;
+}
 
 typedef struct {
     char values[MAX_HEIGHT * MAX_WIDTH];
@@ -51,7 +90,7 @@ void getMaze(const char* path, Maze* maze)
     maze->height = row;
 }
 
-void flood(int pos, Maze* maze)
+void flood(int pos, Maze* maze, Queue* q)
 {
     /* Directions: 1 - up, 2 - right, 3 - down, 4 -left */
 
@@ -62,22 +101,46 @@ void flood(int pos, Maze* maze)
     const int right = 1;
     const int left  = -1;
 
-    // Ignore edges, already flooded cells and out of bounds
-    if ( (pos < 0) || (pos > strlen(maze->values)) || (maze->values[pos] == '#') || (maze->values[pos] == 'F') || (maze->values[pos] == '\n')) return;
-    
+    // Return if out of bounds
+    if ( (pos < 0) || (pos > strlen(maze->values)) ) return;
+
     printf("POS: %d CHAR: [%c]\n", pos, maze->values[pos]);
     
-    printMaze(maze);
     
-    // Fill only empty spaces
-    if ( maze->values[pos] == ' ' ) maze->values[pos] = 'F';
+    // Add initial position to queue
+    enQueue(q, pos);
+    int n;
+    char counter = ' ' + 1;
+    while ( q->front != -1 && q->back != -1)
+    {
+        printf("----------\n");
+        printf("F:%d B:%d\n", q->front, q->back);
+        n = q->items[q->front];
+        deQueue(q);
 
-    usleep(50*1000);
+        printf("%d\n", n);
+        if ( (n < 0) || (n > strlen(maze->values)) || (maze->values[n] == '#') || (maze->values[n] == '\n'))
+        {
+            continue;
+        }
 
-    flood(pos + up,    maze);
-    flood(pos + right, maze);
-    flood(pos + down,  maze);
-    flood(pos + left,  maze);
+        if ( (maze->values[n] > ' ') && (maze->values[n] < '^') )
+        {
+            continue;
+        }
+        maze->values[n] = counter;
+        printMaze(maze);
+
+        
+        enQueue(q, n + up);
+        enQueue(q, n + right);
+        enQueue(q, n + down);
+        enQueue(q, n + left);
+
+        usleep(10*1000);
+
+    }
+
 }
 int main()
 {
@@ -85,8 +148,12 @@ int main()
     Maze* maze = (Maze*) malloc(sizeof(Maze));
     getMaze("./maze.txt", maze);
 
-    printMaze(maze);
-    flood(maze->start, maze);
+    // Init queue for flood
+    Queue* q = (Queue*) malloc(sizeof(Queue));
+    initQueue(q);
+
+
+    flood(maze->start, maze, q);
     printMaze(maze);
 
     return(0);
