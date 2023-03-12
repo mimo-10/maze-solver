@@ -1,4 +1,4 @@
-# Queue Flood Fill based maze solver
+# Queue Flood fill maze solver
 
 ## The program
 The program will execute the following steps to solve a maze:
