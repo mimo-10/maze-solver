@@ -9,33 +9,17 @@
 
 int main()
 {
-    // Read maze files
+    // Read and intialize maze
     Maze* maze = (Maze*) malloc(sizeof(Maze));
     getMaze("./maze.txt", maze);
-    printf("width %d \n", maze->width);
 
-    // Init queue for flood
-    Queue* q = (Queue*) malloc(sizeof(Queue));
-    int solutionFound = 0;
-    for (int i = 0; i < maze->goalsCounter; i++)
-    {
-        initQueue(q);
+    // Finds the optimal solution using a modified flood fill from all exits
+    findSolution(maze);
 
-        printf("Flood %d\n", i+1);
-        printf("Starting at char (%c) at pos (%d)\n", maze->values[maze->goals[i]], maze->goals[i]);
-
-        if ( flood(maze->goals[i], maze, q) )
-            solutionFound = 1;
-
-        printMaze(maze);
-    }
-    if (!solutionFound)
-    {
-        printf("No solution found!");
-        return(1);
-    }
-
+    // Solves the maze by taking the fastest path
     solve(maze);
+
+    // Prints the maze with the intitial formatting
     prettyPrintMaze(maze);
     return(0);
 }
@@ -220,6 +204,30 @@ int flood(int pos, Maze* maze, Queue* q)
         #endif
     }
     return endFound;
+}
+
+void findSolution(Maze* maze)
+{
+    // Init queue for flood
+    Queue* q = (Queue*) malloc(sizeof(Queue));
+    int solutionFound = 0;
+    for (int i = 0; i < maze->goalsCounter; i++)
+    {
+        initQueue(q);
+
+        printf("Flood %d\n", i+1);
+        printf("Starting at char (%c) at pos (%d)\n", maze->values[maze->goals[i]], maze->goals[i]);
+
+        if ( flood(maze->goals[i], maze, q) )
+            solutionFound = 1;
+
+        printMaze(maze);
+    }
+    if (!solutionFound)
+    {
+        printf("No solution found!");
+        exit(1);
+    }
 }
 
 void solve(Maze* maze){

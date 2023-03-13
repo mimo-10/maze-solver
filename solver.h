@@ -31,4 +31,5 @@ void getMaze(const char* path, Maze* maze);
 void printMaze(Maze* maze);
 void prettyPrintMaze(Maze* maze);
 int  flood(int pos, Maze* maze, Queue* q);
+void findSolution(Maze* maze);
 void solve(Maze* maze);
