@@ -114,7 +114,7 @@ void getMaze(const char* path, Maze* maze)
         {
             // Width = counter up until first newline, i.e. length of a row
             if ( maze->width == 0) 
-                maze->width = counter;
+                maze->width = counter+1;
             row++;
             values[counter] = '\n';
         } 
@@ -134,7 +134,7 @@ void getMaze(const char* path, Maze* maze)
 
         counter++;
     }
-    
+
     maze->goalsCounter = goalsCounter;
     values[counter-1] = '\0';
     strcpy(maze->values, values);
@@ -143,7 +143,7 @@ void getMaze(const char* path, Maze* maze)
 int flood(int pos, Maze* maze, Queue* q)
 {
     // Distance to cell above and below any given cell is the width
-    const int dd = maze->width;  
+    const int dd =  maze->width;  
     const int du = -maze->width; 
     const int dr = 1;
     const int dl = -1;
@@ -163,7 +163,7 @@ int flood(int pos, Maze* maze, Queue* q)
 
     // Queue is empty when both pointers are -1
     while ( q->front != -1 && q->back != -1)
-    {
+    {   
         // printf("----WHILE----\n");
         // printf("Front: %d Back: %d", q->front, q->back);
         n = q->items[q->front];
@@ -171,9 +171,9 @@ int flood(int pos, Maze* maze, Queue* q)
         n >>= 8;
         // printf("Char: %c\n", maze->values[n]);
         // printf("--(n: %d)--(distance: (%c))--\n", n, distance);
-        deQueue(q);
         // printf("Front: %d Back: %d\n", q->front, q->back);
         // printf("Up: (%c) Down: (%c) Left: (%c) Right: (%c)\n", maze->values[du],maze->values[dd],maze->values[dl],maze->values[dr]);
+        deQueue(q);
 
         // Check if position is in bounds
         if ( (n < 0) || (n > strlen(maze->values)) || (maze->values[n] == '}') || (maze->values[n] == '\n') )

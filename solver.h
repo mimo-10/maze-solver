@@ -7,7 +7,7 @@
 #define MAX_HEIGHT 50
 #define MAX_GOALS  10
 #define MAX_PATH   100
-#define MAX_Q_SIZE 10000000
+#define MAX_Q_SIZE 30000000 // This is probably a bad idea considering embedded systems, I think a circular queue would solve it
 
 typedef struct {
     char values[MAX_HEIGHT * MAX_WIDTH];
