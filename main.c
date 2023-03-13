@@ -3,20 +3,24 @@
 #include <string.h>
 #include <unistd.h>
 
-#define MIN(a,b) ((a < b) ? a : b)
-#define MAX(a,b) ((a > b) ? a : b)
-#define ABS(x)   ((x > 0) ? -x : x)
+#include "solver.h"
 
-#define MAX_WIDTH  30
-#define MAX_HEIGHT 30
-#define MAX_Q_SIZE 2000
-#define PRINT 1 // Whether or not to print the maze during flooding
+int main()
+{
+    // Read maze files
+    Maze* maze = (Maze*) malloc(sizeof(Maze));
+    getMaze("./maze.txt", maze);
 
-typedef struct {
-    int front;
-    int back;
-    int items[MAX_Q_SIZE];
-} Queue;
+    // Init queue for flood
+    Queue* q = (Queue*) malloc(sizeof(Queue));
+    initQueue(q);
+
+
+    flood(maze->start, maze, q);
+    printMaze(maze);
+
+    return(0);
+}
 
 void enQueue(Queue* q, int value)
 {
@@ -46,12 +50,6 @@ void initQueue(Queue* q)
     q->back = -1;
 }
 
-typedef struct {
-    char values[MAX_HEIGHT * MAX_WIDTH];
-    int height;
-    int width;
-    int start;
-} Maze;
 
 void printMaze(Maze* maze)
 {
@@ -141,20 +139,4 @@ void flood(int pos, Maze* maze, Queue* q)
         #endif
     }
 
-}
-int main()
-{
-    // Read maze files
-    Maze* maze = (Maze*) malloc(sizeof(Maze));
-    getMaze("./maze.txt", maze);
-
-    // Init queue for flood
-    Queue* q = (Queue*) malloc(sizeof(Queue));
-    initQueue(q);
-
-
-    flood(maze->start, maze, q);
-    printMaze(maze);
-
-    return(0);
 }
