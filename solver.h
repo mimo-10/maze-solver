@@ -5,12 +5,15 @@
 
 #define MAX_WIDTH  30
 #define MAX_HEIGHT 30
-#define MAX_Q_SIZE 2000
+#define MAX_GOALS  10
+#define MAX_PATH   100
+#define MAX_Q_SIZE 10000000
 
 typedef struct {
     char values[MAX_HEIGHT * MAX_WIDTH];
     int height;
     int width;
+    int goals[MAX_GOALS];
     int start;
 } Maze;
 
@@ -26,3 +29,4 @@ void initQueue(Queue* q);
 void getMaze(const char* path, Maze* maze);
 void printMaze(Maze* maze);
 void flood(int pos, Maze* maze, Queue* q);
+void solve(Maze* maze);
