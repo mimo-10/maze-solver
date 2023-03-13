@@ -16,15 +16,23 @@ int main()
 
     // Init queue for flood
     Queue* q = (Queue*) malloc(sizeof(Queue));
-    
+    int solutionFound = 0;
     for (int i = 0; i < maze->goalsCounter; i++)
     {
         initQueue(q);
 
         printf("Flood %d\n", i+1);
         printf("Starting at char (%c) at pos (%d)\n", maze->values[maze->goals[i]], maze->goals[i]);
-        flood(maze->goals[i], maze, q);
+
+        if ( flood(maze->goals[i], maze, q) )
+            solutionFound = 1;
+
         printMaze(maze);
+    }
+    if (!solutionFound)
+    {
+        printf("No solution found!");
+        return(1);
     }
 
     solve(maze);
@@ -145,15 +153,15 @@ void getMaze(const char* path, Maze* maze)
     maze->height = row;
 }
 
-void flood(int pos, Maze* maze, Queue* q)
+int flood(int pos, Maze* maze, Queue* q)
 {
     // Distance to cell above and below any given cell is the width
     const int dd = maze->width;  
     const int du = -maze->width; 
     const int dr = 1;
     const int dl = -1;
-    // Return if out of bounds
-    if ( (pos < 0) || (pos > strlen(maze->values)) ) return;
+
+    int endFound = 0;
 
     // printf("POS: %d CHAR: [%c]\n", pos, maze->values[pos]);
     
@@ -193,7 +201,10 @@ void flood(int pos, Maze* maze, Queue* q)
         }
         // Continue if position is the starting position
         if ( (maze->values[n] == '~') )
+        {
+            endFound = 1;
             continue;
+        }
 
         // Set value for position
         maze->values[n] = distance;
@@ -208,6 +219,7 @@ void flood(int pos, Maze* maze, Queue* q)
         usleep(200*1000);
         #endif
     }
+    return endFound;
 }
 
 void solve(Maze* maze){

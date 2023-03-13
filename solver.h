@@ -30,5 +30,5 @@ void initQueue(Queue* q);
 void getMaze(const char* path, Maze* maze);
 void printMaze(Maze* maze);
 void prettyPrintMaze(Maze* maze);
-void flood(int pos, Maze* maze, Queue* q);
+int  flood(int pos, Maze* maze, Queue* q);
 void solve(Maze* maze);
