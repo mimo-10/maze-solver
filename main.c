@@ -12,6 +12,7 @@ int main()
     // Read maze files
     Maze* maze = (Maze*) malloc(sizeof(Maze));
     getMaze("./maze.txt", maze);
+    printf("width %d \n", maze->width);
 
     // Init queue for flood
     Queue* q = (Queue*) malloc(sizeof(Queue));
@@ -20,12 +21,14 @@ int main()
     {
         initQueue(q);
 
+        printf("Flood %d\n", i+1);
+        printf("Starting at char (%c) at pos (%d)\n", maze->values[maze->goals[i]], maze->goals[i]);
         flood(maze->goals[i], maze, q);
-        printf("Flood %d\n", i);
         printMaze(maze);
     }
+
     solve(maze);
-    printMaze(maze);
+    prettyPrintMaze(maze);
     return(0);
 }
 
@@ -57,7 +60,34 @@ void initQueue(Queue* q)
     q->back = -1;
 }
 
-
+void prettyPrintMaze(Maze* maze)
+{
+    char ch;
+    int counter = 0;
+    while (ch != '\0')
+    {
+        ch = maze->values[counter++];
+        switch (ch)
+        {
+        case '}':
+            printf("%c", '#');
+            break;
+        case '~':
+            printf("%c", '^');
+            break;
+        case '!':
+            printf("%c", 'E');
+            break;
+        case '\n':
+            printf("\n");
+            break;
+        default:
+            printf("%c", ' ');
+            break;
+        }
+    }
+    printf("\n");
+}
 void printMaze(Maze* maze)
 {
     printf("%s\n", maze->values);
@@ -88,7 +118,8 @@ void getMaze(const char* path, Maze* maze)
         else if ( ch == '\n')
         {
             // Width = counter up until first newline, i.e. length of a row
-            if ( maze->width == 0) maze->width = counter;
+            if ( maze->width == 0) 
+                maze->width = counter;
             row++;
             values[counter] = '\n';
         } 
@@ -121,33 +152,36 @@ void flood(int pos, Maze* maze, Queue* q)
     const int du = -maze->width; 
     const int dr = 1;
     const int dl = -1;
-
     // Return if out of bounds
     if ( (pos < 0) || (pos > strlen(maze->values)) ) return;
 
     // printf("POS: %d CHAR: [%c]\n", pos, maze->values[pos]);
     
     // Add initial position to queue
-    int n;
+    long n;
     int counter = 0;
     char distance = ' ';
+
+    // A queue element n will store both the position of the cell
+    // and its manhattan distance to the flood origin
     enQueue(q, (pos << 8) | (distance + 1));
 
     // Queue is empty when both pointers are -1
     while ( q->front != -1 && q->back != -1)
     {
-
+        // printf("----WHILE----\n");
+        // printf("Front: %d Back: %d", q->front, q->back);
         n = q->items[q->front];
         distance = (char)(n & 255);
         n >>= 8;
+        // printf("Char: %c\n", maze->values[n]);
         // printf("--(n: %d)--(distance: (%c))--\n", n, distance);
-        
         deQueue(q);
-
-        // printf("%c, %d\n", distance, q->back);
+        // printf("Front: %d Back: %d\n", q->front, q->back);
+        // printf("Up: (%c) Down: (%c) Left: (%c) Right: (%c)\n", maze->values[du],maze->values[dd],maze->values[dl],maze->values[dr]);
 
         // Check if position is in bounds
-        if ( (n < 0) || (n > strlen(maze->values)) || (maze->values[n] == '}') || (maze->values[n] == '\n'))
+        if ( (n < 0) || (n > strlen(maze->values)) || (maze->values[n] == '}') || (maze->values[n] == '\n') )
         {
             continue;
         }
@@ -165,9 +199,9 @@ void flood(int pos, Maze* maze, Queue* q)
         maze->values[n] = distance;
 
         enQueue(q, ((n + du) << 8) | (distance + 1));
+        enQueue(q, ((n + dl) << 8) | (distance + 1));
         enQueue(q, ((n + dr) << 8) | (distance + 1));
         enQueue(q, ((n + dd) << 8) | (distance + 1));
-        enQueue(q, ((n + dl) << 8) | (distance + 1));
 
         #if PRINT
         printMaze(maze);
@@ -231,5 +265,6 @@ void solve(Maze* maze){
             found = 1;
 
         maze->values[pos] = '~';
+        prettyPrintMaze(maze);
     } while ( !found );
 }
