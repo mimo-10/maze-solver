@@ -3,13 +3,14 @@
 #include <string.h>
 #include <unistd.h>
 
-#define MIN(a,b) (((a)<(b))?(a):(b))
-#define MAX(a,b) (((a)>(b))?(a):(b))
+#define MIN(a,b) ((a < b) ? a : b)
+#define MAX(a,b) ((a > b) ? a : b)
+#define ABS(x)   ((x > 0) ? -x : x)
 
 #define MAX_WIDTH  30
 #define MAX_HEIGHT 30
-#define MAX_PATH   70
 #define MAX_Q_SIZE 2000
+#define PRINT 1 // Whether or not to print the maze during flooding
 
 typedef struct {
     int front;
@@ -92,9 +93,7 @@ void getMaze(const char* path, Maze* maze)
 
 void flood(int pos, Maze* maze, Queue* q)
 {
-    /* Directions: 1 - up, 2 - right, 3 - down, 4 -left */
-
-    // Distance to cell above  and below any given cell is the width
+    // Distance to cell above and below any given cell is the width
     const int down  = maze->width;  
     const int up    = -maze->width; 
 
@@ -106,39 +105,40 @@ void flood(int pos, Maze* maze, Queue* q)
 
     printf("POS: %d CHAR: [%c]\n", pos, maze->values[pos]);
     
-    
     // Add initial position to queue
     enQueue(q, pos);
     int n;
-    char counter = ' ' + 1;
+    char counter = 0;
+    
+    // Queue is empty when both pointers are -1
     while ( q->front != -1 && q->back != -1)
     {
         printf("----------\n");
-        printf("F:%d B:%d\n", q->front, q->back);
         n = q->items[q->front];
         deQueue(q);
 
         printf("%d\n", n);
+
+        // Check if position is in bounds
         if ( (n < 0) || (n > strlen(maze->values)) || (maze->values[n] == '#') || (maze->values[n] == '\n'))
-        {
             continue;
-        }
 
+        // Continue if position is already set
         if ( (maze->values[n] > ' ') && (maze->values[n] < '^') )
-        {
             continue;
-        }
-        maze->values[n] = counter;
-        printMaze(maze);
 
-        
+        // Set value for position
+        maze->values[n] = '0';
+
         enQueue(q, n + up);
         enQueue(q, n + right);
         enQueue(q, n + down);
         enQueue(q, n + left);
 
+        #if PRINT
+        printMaze(maze);
         usleep(10*1000);
-
+        #endif
     }
 
 }
