@@ -15,13 +15,17 @@ int main()
 
     // Init queue for flood
     Queue* q = (Queue*) malloc(sizeof(Queue));
-    initQueue(q);
     
+    for (int i = 0; i < maze->goalsCounter; i++)
+    {
+        initQueue(q);
 
-    printf("%d\n", maze->goals[0]);
-    flood(maze->goals[0], maze, q);
-    printMaze(maze);
+        flood(maze->goals[i], maze, q);
+        printf("Flood %d\n", i);
+        printMaze(maze);
+    }
     solve(maze);
+    printMaze(maze);
     return(0);
 }
 
@@ -104,7 +108,7 @@ void getMaze(const char* path, Maze* maze)
 
         counter++;
     }
-
+    maze->goalsCounter = goalsCounter;
     values[counter-1] = '\0';
     strcpy(maze->values, values);
     maze->height = row;
@@ -121,7 +125,7 @@ void flood(int pos, Maze* maze, Queue* q)
     // Return if out of bounds
     if ( (pos < 0) || (pos > strlen(maze->values)) ) return;
 
-    printf("POS: %d CHAR: [%c]\n", pos, maze->values[pos]);
+    // printf("POS: %d CHAR: [%c]\n", pos, maze->values[pos]);
     
     // Add initial position to queue
     int n;
@@ -180,8 +184,8 @@ void solve(Maze* maze){
     int found = 0;
     do
     {
-        printMaze(maze);
-        printf("\n\n");
+        // printMaze(maze);
+        // printf("\n\n");
 
         // Find the smallest neighbour
         u = pos - maze->width;
@@ -193,14 +197,14 @@ void solve(Maze* maze){
 
         next = uc;
         pos = u;
-        printf("U:%c L:%c D:%c R:%c\n", uc, lc, dc, rc);
-        printf("%c POS: %d\n", maze->values[pos], pos);
+        // printf("U:%c L:%c D:%c R:%c\n", uc, lc, dc, rc);
+        // printf("%c POS: %d\n", maze->values[pos], pos);
         if(next > lc && lc != 0)
         {
             next = lc;
             pos = l;
         }
-        printf("(%c)\n", next);
+        // printf("(%c)\n", next);
 
         if(next > dc && dc != 0)
         {
@@ -208,19 +212,19 @@ void solve(Maze* maze){
             pos = d;
         }
 
-        printf("(%c)\n", next);
+        // printf("(%c)\n", next);
 
         if(next > rc && rc != 0)
         {
             next = rc;
             pos = r;
         }
-        printf("(%c)\n", next);
+        // printf("(%c)\n", next);
         
-        printf("%d %d\n", next, maze->values[u]);
+        // printf("%d %d\n", next, maze->values[u]);
         
 
-        printf("%c POS: %d\n", maze->values[pos], pos);
+        // printf("%c POS: %d\n", maze->values[pos], pos);
         usleep(100*1000);
 
         if ( maze->values[pos] == '!' )

@@ -14,6 +14,7 @@ typedef struct {
     int height;
     int width;
     int goals[MAX_GOALS];
+    int goalsCounter;
     int start;
 } Maze;
 
