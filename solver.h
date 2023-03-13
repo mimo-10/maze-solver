@@ -32,4 +32,4 @@ void printMaze(Maze* maze);
 void prettyPrintMaze(Maze* maze);
 int  flood(int pos, Maze* maze, Queue* q);
 void findSolution(Maze* maze);
-void solve(Maze* maze);
+void showSolution(Maze* maze);

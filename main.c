@@ -9,17 +9,18 @@
 
 int main()
 {
-    // Read and intialize maze
     Maze* maze = (Maze*) malloc(sizeof(Maze));
+
+    // Read and intialize maze
     getMaze("./maze.txt", maze);
 
     // Finds the optimal solution using a modified flood fill from all exits
     findSolution(maze);
 
     // Solves the maze by taking the fastest path
-    solve(maze);
+    showSolution(maze);
 
-    // Prints the maze with the intitial formatting
+    // Print the maze with the intitial formatting
     prettyPrintMaze(maze);
     return(0);
 }
@@ -54,8 +55,9 @@ void initQueue(Queue* q)
 
 void prettyPrintMaze(Maze* maze)
 {
-    char ch;
+    char ch = ' ';
     int counter = 0;
+
     while (ch != '\0')
     {
         ch = maze->values[counter++];
@@ -98,6 +100,7 @@ void getMaze(const char* path, Maze* maze)
 
     fp = fopen(path, "r");
 
+    // Read chars and convert special characters
     while (ch != EOF) 
     {
         ch = fgetc(fp);
@@ -131,10 +134,10 @@ void getMaze(const char* path, Maze* maze)
 
         counter++;
     }
+    
     maze->goalsCounter = goalsCounter;
     values[counter-1] = '\0';
     strcpy(maze->values, values);
-    maze->height = row;
 }
 
 int flood(int pos, Maze* maze, Queue* q)
@@ -215,13 +218,13 @@ void findSolution(Maze* maze)
     {
         initQueue(q);
 
-        printf("Flood %d\n", i+1);
-        printf("Starting at char (%c) at pos (%d)\n", maze->values[maze->goals[i]], maze->goals[i]);
+        // printf("Flood %d\n", i+1);
+        // printf("Starting at char (%c) at pos (%d)\n", maze->values[maze->goals[i]], maze->goals[i]);
 
         if ( flood(maze->goals[i], maze, q) )
             solutionFound = 1;
 
-        printMaze(maze);
+        // printMaze(maze);
     }
     if (!solutionFound)
     {
@@ -230,7 +233,7 @@ void findSolution(Maze* maze)
     }
 }
 
-void solve(Maze* maze){
+void showSolution(Maze* maze){
     int pos = maze->start;
     int u, d, l, r;
     char uc, dc, lc, rc;
@@ -279,12 +282,11 @@ void solve(Maze* maze){
         
 
         // printf("%c POS: %d\n", maze->values[pos], pos);
-        usleep(100*1000);
+        // usleep(100*1000);
 
         if ( maze->values[pos] == '!' )
             found = 1;
 
         maze->values[pos] = '~';
-        prettyPrintMaze(maze);
     } while ( !found );
 }
