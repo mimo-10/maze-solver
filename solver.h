@@ -6,7 +6,6 @@
 #define MAX_WIDTH  30
 #define MAX_HEIGHT 30
 #define MAX_Q_SIZE 2000
-#define PRINT 1 // Whether or not to print the maze during flooding
 
 typedef struct {
     char values[MAX_HEIGHT * MAX_WIDTH];

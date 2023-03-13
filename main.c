@@ -5,6 +5,8 @@
 
 #include "solver.h"
 
+#define PRINT 0 // Whether or not to print the maze during flooding
+
 int main()
 {
     // Read maze files
@@ -15,10 +17,9 @@ int main()
     Queue* q = (Queue*) malloc(sizeof(Queue));
     initQueue(q);
 
-
     flood(maze->start, maze, q);
     printMaze(maze);
-
+    printf("\u25A0\n");
     return(0);
 }
 
@@ -92,11 +93,10 @@ void getMaze(const char* path, Maze* maze)
 void flood(int pos, Maze* maze, Queue* q)
 {
     // Distance to cell above and below any given cell is the width
-    const int down  = maze->width;  
-    const int up    = -maze->width; 
-
-    const int right = 1;
-    const int left  = -1;
+    const int dd = maze->width;  
+    const int du = -maze->width; 
+    const int dr = 1;
+    const int dl = -1;
 
     // Return if out of bounds
     if ( (pos < 0) || (pos > strlen(maze->values)) ) return;
@@ -104,38 +104,50 @@ void flood(int pos, Maze* maze, Queue* q)
     printf("POS: %d CHAR: [%c]\n", pos, maze->values[pos]);
     
     // Add initial position to queue
-    enQueue(q, pos);
     int n;
-    char counter = 0;
-    
+    int counter = 0;
+    char distance = '#';
+    enQueue(q, (pos << 8) | (distance + 1));
+
     // Queue is empty when both pointers are -1
     while ( q->front != -1 && q->back != -1)
     {
-        printf("----------\n");
+
         n = q->items[q->front];
+        printf("%d\n", n);
+        distance = (char)(n & 255);
+        n >>= 8;
+        printf("--(n: %d)--(distance: (%c))--\n", n, distance);
+        
         deQueue(q);
 
-        printf("%d\n", n);
+        printf("%c\n", distance);
 
         // Check if position is in bounds
         if ( (n < 0) || (n > strlen(maze->values)) || (maze->values[n] == '#') || (maze->values[n] == '\n'))
+        {
+            printf("Out of bounds\n");
             continue;
+        }
 
         // Continue if position is already set
         if ( (maze->values[n] > ' ') && (maze->values[n] < '^') )
+         {
+            printf("Out of range\n");
             continue;
+        }
 
         // Set value for position
-        maze->values[n] = '0';
+        maze->values[n] = distance;
 
-        enQueue(q, n + up);
-        enQueue(q, n + right);
-        enQueue(q, n + down);
-        enQueue(q, n + left);
+        enQueue(q, ((n + du) << 8) | (distance + 1));
+        enQueue(q, ((n + dr) << 8) | (distance + 1));
+        enQueue(q, ((n + dd) << 8) | (distance + 1));
+        enQueue(q, ((n + dl) << 8) | (distance + 1));
 
         #if PRINT
         printMaze(maze);
-        usleep(10*1000);
+        usleep(1000*1000);
         #endif
     }
 
