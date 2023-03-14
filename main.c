@@ -6,20 +6,12 @@
 
 #include "solver.h"
 
-#define PRINT 0 // Whether or not to print the maze during flooding
-
-void printDistances(Maze* maze)
-{
-    for (int i = 0; i < strlen(maze->values); i++)
-        printf("[%d : %d]",i, maze->distances[i]);
-}
-
 int main()
 {
     Maze* maze = (Maze*) malloc(sizeof(Maze));
 
     // Read and intialize maze
-    getMaze("./maze2.txt", maze);
+    getMaze("./maze.txt", maze);
 
     // Finds the optimal solution using a modified flood fill from all exits
     findSolution(maze);
@@ -59,7 +51,6 @@ void initQueue(Queue* q)
     q->front = -1;
     q->back = -1;
 }
-
 
 void printMaze(Maze* maze)
 {
@@ -116,7 +107,6 @@ void getMaze(const char* path, Maze* maze)
     }
 
     maze->goalsCounter = goalsCounter;
-    values[counter-1] = '\0';
     strcpy(maze->values, values);
 }
 
