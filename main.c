@@ -162,7 +162,7 @@ int flood(int pos, Maze* maze, Queue* q)
         }
 
         // Check if starting position
-        if ( (maze->values[position] == '^') )
+        if ( maze->values[position] == '^' )
         {
             maze->distances[position] = distance;
             return(1);
@@ -177,6 +177,7 @@ int flood(int pos, Maze* maze, Queue* q)
         enQueue(q, ((position + dr) << 16) | (distance + 1));
         enQueue(q, ((position + dd) << 16) | (distance + 1));
     }
+    return(0);
 }
 
 void findSolution(Maze* maze)
