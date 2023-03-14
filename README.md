@@ -14,3 +14,6 @@ The program will execute the following steps to solve a maze:
 Modified here refers to the fact that the algorithm needs to not only flood, but to flood the best way (to find the optimal exit path). This means that after the first flood fill, the subsequent flood fills need to be mindful to not overwrite and create worse paths. This is achieved by simply checking if the new value is greater than the current value. If it is, continue flooding and if not, terminate. We can terminate because if at any point the new value is greater (in value) then the subsequent path can not be a better path than the existing path.
 
 Queue is used to ensure that every cell gets the correct manhattan distance from the flood origin. 
+
+## Further development
+This can probably be improved in more ways that I could ever imagine, but I want to note that I'm aware of at least 2 improvements. These are not of great concern which is why I'm not going to fix them immediately. 
