@@ -12,7 +12,7 @@ int main(int argc, char* argv[])
     findSolution(maze);
 
     // Solves the maze by taking the fastest path
-    showSolution(maze);
+    showSolution(maze, atoi(argv[2]));
     
     // Print the maze
     printMaze(maze);

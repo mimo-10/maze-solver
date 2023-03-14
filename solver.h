@@ -31,7 +31,7 @@ void initQueue(Queue* q);
 void getMaze(const char* path, Maze* maze);
 void printMaze(Maze* maze);
 void findSolution(Maze* maze);
-void showSolution(Maze* maze);
+void showSolution(Maze* maze, int maxSteps);
 int  flood(int pos, Maze* maze, Queue* q);
 int  isLegalMove(Maze* maze, int p, int d, int bestStep);
 
@@ -224,15 +224,24 @@ int isLegalMove(Maze* maze, int p, int d, int bestStep)
     return(0);
 }
 
-void showSolution(Maze* maze){
+void showSolution(Maze* maze, int maxSteps){
     int pos = maze->start;
     int u, d, l, r;     // Positions
     int ud, dd, ld, rd; // Distances
     int bestStep;
     int found = 0;
-
+    int counter = 0;
     do
     {
+        if ( counter++ > maxSteps)
+        {
+            if ( !found )
+            {
+                printf("No solutions for the maze in under %d steps\n", maxSteps);
+                exit(1);
+            }
+        }
+             
         u = pos - maze->width;
         d = pos + maze->width;
         r = pos + 1;
