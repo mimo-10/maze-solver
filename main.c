@@ -6,12 +6,12 @@
 
 #include "solver.h"
 
-int main()
+int main(int argc, char* argv[])
 {
     Maze* maze = (Maze*) malloc(sizeof(Maze));
-
+    printf("%s\n", argv[1]);
     // Read and intialize maze
-    getMaze("./maze.txt", maze);
+    getMaze(argv[1], maze);
 
     // Finds the optimal solution using a modified flood fill from all exits
     findSolution(maze);
