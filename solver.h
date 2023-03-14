@@ -11,11 +11,13 @@
 
 typedef struct {
     char values[MAX_HEIGHT * MAX_WIDTH];
-    int height;
-    int width;
-    int goals[MAX_GOALS];
-    int goalsCounter;
-    int start;
+    int  distances[MAX_HEIGHT * MAX_WIDTH];
+    int  height;
+    int  width;
+    int  goals[MAX_GOALS];
+    int  goalsCounter;
+    int  start;
+    int  length;
 } Maze;
 
 typedef struct {
