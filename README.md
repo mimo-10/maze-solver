@@ -3,6 +3,8 @@ Maze solver written entirely in C from scratch
 
 ## Testing
 Run using `bash run.sh 1` to run the first maze, 2 for the second and 3 for the 3rd. Own mazes can be tested by renaming the file to *maze<n>.txt* and then calling the run script with corresponding *n* as argument. 
+  
+Tested on Fedora 37 and MacOS Ventura. Probably works on Windows...
 
 ## The program
 The program will execute the following steps to solve a maze:
