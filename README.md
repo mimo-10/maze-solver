@@ -1,4 +1,4 @@
-# Queue Flood fill maze solver
+# Queue-based Flood fill maze solver
 Maze solver written entirely in C from scratch
 
 ## Testing
