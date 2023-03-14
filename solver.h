@@ -74,20 +74,20 @@ void printMaze(Maze* maze)
 
 void getMaze(const char* path, Maze* maze)
 {
-    FILE *fp;
-    char values[MAX_WIDTH * MAX_HEIGHT];
-    int distances[MAX_WIDTH * MAX_HEIGHT];
-    char ch;
-    int counter = 0;
-    int row = 0;
-    int goalsCounter = 0;
+    FILE* fp;
+    char  values[MAX_WIDTH * MAX_HEIGHT];
+    int   distances[MAX_WIDTH * MAX_HEIGHT];
+    char  ch;
+    int   counter = 0;
+    int   row = 0;
+    int   goalsCounter = 0;
 
     maze->width = 0;
 
     fp = fopen(path, "r");
 
     // Read chars and convert special characters
-    while (ch != EOF) 
+    while ( ch != EOF ) 
     {
         ch = fgetc(fp);
         
@@ -134,10 +134,7 @@ int flood(int pos, Maze* maze, Queue* q)
     const int dl = -1;
 
     int endFound = 0;
-
-    // printf("POS: %d CHAR: [%c]\n", pos, maze->values[pos]);
     
-    // Add initial position to queue
     __int32_t n;
     __int16_t counter  = 0;
     __int16_t distance = 0;
@@ -151,6 +148,8 @@ int flood(int pos, Maze* maze, Queue* q)
     while ( q->front != -1 && q->back != -1)
     {   
         n = q->items[q->front];
+
+        // Extract distance and position from the compound element
         distance = (__int16_t)(n & 65535);
         position = (__int16_t)(n >> 16);
         
@@ -158,9 +157,7 @@ int flood(int pos, Maze* maze, Queue* q)
 
         // Check if position is in bounds
         if ( (position < 0) || (position > strlen(maze->values)) || (maze->values[position] == '\n') )
-        {
             continue;
-        }
 
         // Continue if wall
         if(maze->values[position] == '#')
@@ -171,10 +168,7 @@ int flood(int pos, Maze* maze, Queue* q)
 
         // Continue if an already set position is better
         if ( (maze->values[position] == 'F') && (maze->distances[position] < distance) )
-        {
-            // TODO: An iterations shouldn't check spaces filled by itself at all 
-            continue;
-        }
+            continue; // TODO: An iterations shouldn't check spaces filled by itself at all 
 
         // Check if starting position
         if ( maze->values[position] == '^' )
@@ -199,7 +193,8 @@ void findSolution(Maze* maze)
 {
     // Init queue for flood
     Queue* q = (Queue*) malloc(sizeof(Queue));
-    int solutionFound = 0;
+    int    solutionFound = 0;
+
     for (int i = 0; i < maze->goalsCounter; i++)
     {
         initQueue(q);
@@ -207,12 +202,13 @@ void findSolution(Maze* maze)
         if ( flood(maze->goals[i], maze, q) )
             solutionFound = 1;
     }
-    if (!solutionFound)
+    if ( !solutionFound )
     {
         printf("No solution found!\n");
         exit(1);
     }
 }
+
 int isLegalMove(Maze* maze, int p, int d, int bestStep)
 {
     // Check if next distance is better and next position is in bounds
@@ -230,8 +226,8 @@ int isLegalMove(Maze* maze, int p, int d, int bestStep)
 
 void showSolution(Maze* maze){
     int pos = maze->start;
-    int u, d, l, r;
-    int ud, dd, ld, rd;
+    int u, d, l, r;     // Positions
+    int ud, dd, ld, rd; // Distances
     int bestStep;
     int found = 0;
 
@@ -242,7 +238,11 @@ void showSolution(Maze* maze){
         r = pos + 1;
         l = pos - 1;
 
-        ud = maze->distances[u]; ld = maze->distances[l]; dd = maze->distances[d]; rd = maze->distances[r];
+        ud = maze->distances[u];
+        ld = maze->distances[l];
+        dd = maze->distances[d];
+        rd = maze->distances[r];
+
         bestStep = maze->distances[pos];
 
         if ( isLegalMove(maze, u, ud, bestStep) )
@@ -283,5 +283,4 @@ void showSolution(Maze* maze){
         if ( maze->values[i] == 'F' ) 
             maze->values[i] = ' '; 
     }
-
 }
