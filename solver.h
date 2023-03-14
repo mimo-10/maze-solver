@@ -7,7 +7,7 @@
 #define MAX_HEIGHT 50
 #define MAX_GOALS  10
 #define MAX_PATH   100
-#define MAX_Q_SIZE 30000000 // This is probably a bad idea considering embedded systems, I think a circular queue would solve it
+#define MAX_Q_SIZE 100000 // This is probably a bad idea considering embedded systems, I think a circular queue would solve it
 
 typedef struct {
     char values[MAX_HEIGHT * MAX_WIDTH];
@@ -31,7 +31,7 @@ void deQueue(Queue* q);
 void initQueue(Queue* q);
 void getMaze(const char* path, Maze* maze);
 void printMaze(Maze* maze);
-void prettyPrintMaze(Maze* maze);
 int  flood(int pos, Maze* maze, Queue* q);
 void findSolution(Maze* maze);
 void showSolution(Maze* maze);
+int  isLegalMove(Maze* maze, int p, int d, int bestStep);
