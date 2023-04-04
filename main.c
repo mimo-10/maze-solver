@@ -3,16 +3,25 @@
 int main(int argc, char* argv[])
 {
     Maze* maze = (Maze*) malloc(sizeof(Maze));
-    printf("%s\n", argv[1]);
+    if ( maze == NULL )
+        return(1);
 
     // Read and intialize maze
     getMaze(argv[1], maze);
 
     // Find the optimal solution using a modified flood fill from all exits
-    findSolution(maze);
-
+    if ( floodAll(maze) == 1)
+    {
+        printf("Could not find a solution");
+        return(1);
+    };
+    
     // Solves the maze by taking the fastest path
-    showSolution(maze, atoi(argv[2]));
+    if ( showShortestPath(maze, atoi(argv[2])) == 1 ) 
+    {
+        printf("No solutions for the maze in under %d steps\n", atoi(argv[2]));
+        return(1);
+    };
     
     // Print the maze
     printMaze(maze);
