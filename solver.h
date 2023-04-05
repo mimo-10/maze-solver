@@ -231,6 +231,7 @@ int showShortestPath(Maze* maze, int maxSteps){
     int bestStep;
     int found = 0;
     int counter = 0;
+
     do
     {
         if ( counter++ > maxSteps)
@@ -238,19 +239,23 @@ int showShortestPath(Maze* maze, int maxSteps){
             if ( !found )
                 return(1);
         }
-             
+
+        // Find adjacent cells
         u = pos - maze->width;
         d = pos + maze->width;
         r = pos + 1;
         l = pos - 1;
-
+        
+        // Get distances of adjacent cells
         ud = maze->distances[u];
         ld = maze->distances[l];
         dd = maze->distances[d];
         rd = maze->distances[r];
 
+        // Init best move to the current cell
         bestStep = maze->distances[pos];
 
+        // Find the best move 
         if ( isLegalMove(maze, u, ud, bestStep) )
         {
             bestStep = ud;
@@ -275,6 +280,7 @@ int showShortestPath(Maze* maze, int maxSteps){
             pos = l;
         }
 
+        // If the best step is 0, the goal is found
         if ( bestStep == 0 )
             found = 1;
         

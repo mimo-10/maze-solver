@@ -12,7 +12,7 @@ int main(int argc, char* argv[])
     // Find the optimal solution using a modified flood fill from all exits
     if ( floodAll(maze) == 1)
     {
-        printf("Could not find a solution");
+        printf("Could not find a solution\n");
         return(1);
     };
     
