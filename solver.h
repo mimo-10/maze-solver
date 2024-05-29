@@ -3,6 +3,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <limits.h>
+#include <stdint.h> // in order the use the standard `int` for a universel sizing;
 
 #define MAX_WIDTH  50
 #define MAX_HEIGHT 50
@@ -134,11 +135,11 @@ int flood(int pos, Maze* maze, Queue* q)
     const int dl = -1;
 
     int endFound = 0;
-    
-    __int32_t n;
-    __int16_t counter  = 0;
-    __int16_t distance = 0;
-    __int16_t position = 0;
+    // imported from stdint, this will make it universel;
+    int32_t n; 
+    int16_t counter  = 0;
+    int16_t distance = 0;
+    int16_t position = 0;
 
     // A queue element n will store both the position of the cell
     // and its manhattan distance to the flood origin
@@ -150,8 +151,8 @@ int flood(int pos, Maze* maze, Queue* q)
         n = q->items[q->front];
 
         // Extract distance and position from the compound element
-        distance = (__int16_t)(n & 65535);
-        position = (__int16_t)(n >> 16);
+        distance = (int16_t)(n & 65535); // imported from stdint, this will make it universel;
+        position = (int16_t)(n >> 16);
         
         deQueue(q);
 
